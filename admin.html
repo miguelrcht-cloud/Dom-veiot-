@@ -1,0 +1,8 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ADM - Dom Veiot</title>
+<style>body{background:#0a0a0a;color:#fff;font-family:Arial;padding:20px}input,button{width:100%;padding:14px;margin:6px 0;border-radius:10px;border:none}button{background:#d4af37;font-weight:900}.box{max-width:400px;margin:60px auto;background:#151515;padding:20px;border-radius:14px;border:1px solid #222}</style>
+</head><body>
+<div class="box" id="login"><h2>ADM Dom Veiot</h2><input id="senha" type="password" placeholder="Senha"><button onclick="entrar()">Entrar</button><small style="color:#777">Senha padrão: 1234 (depois você troca)</small></div>
+<div class="box" id="painel" style="display:none"><h2>Agendamentos</h2><p>Whats: (11) 98984-2105</p><p>Rua Mariana, 60 - Jandira</p><hr style="border-color:#222"><p>Os agendamentos que entrarem pelo Whats vão aparecer aqui quando a gente ligar o sistema.</p><button onclick="location.href='index.html'">Ver site</button></div>
+<script>function entrar(){if(document.getElementById('senha').value=='1234'){document.getElementById('login').style.display='none';document.getElementById('painel').style.display='block'}else{alert('Senha errada')}}</script>
+</body></html>
