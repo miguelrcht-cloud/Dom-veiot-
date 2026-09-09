@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dom Veiot Barbearia - Agendamento</title>
+    <title>Dom Veiot Barbearia - Agendamento & Admin</title>
     <link rel="icon" href="https://media.base44.com/images/public/6a9b8c5c1ea53ca6ba6443ab/9e4d1bcd0_logo.png" type="image/png">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,6 +19,7 @@
             --text-white: #ffffff;
             --text-gray: #a0a0a0;
             --border: #1a1a1a;
+            --red: #e74c3c;
             --font-main: 'Montserrat', sans-serif;
         }
 
@@ -48,6 +49,7 @@
             display: flex;
             flex-direction: column;
             gap: 25px;
+            position: relative;
         }
 
         /* HEADER */
@@ -74,7 +76,6 @@
             color: var(--gold);
         }
 
-        /* SEÇÕES DE PASSO */
         .step-title {
             font-size: 0.9rem;
             color: var(--text-gray);
@@ -83,7 +84,7 @@
             font-weight: 600;
         }
 
-        /* 1. SERVIÇOS */
+        /* SERVIÇOS */
         .services-list {
             display: flex;
             flex-direction: column;
@@ -134,11 +135,7 @@
             color: var(--gold);
         }
 
-        /* 2. DATA */
-        .date-input-wrapper {
-            position: relative;
-        }
-
+        /* DATA */
         input[type="date"] {
             width: 100%;
             padding: 15px;
@@ -158,7 +155,7 @@
             cursor: pointer;
         }
 
-        /* 3. HORÁRIOS */
+        /* HORÁRIOS GRID */
         .time-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -189,22 +186,16 @@
             color: var(--bg-black);
         }
 
-        /* ESTILO DO HORÁRIO JÁ OCUPADO/RISCADO */
+        /* HORÁRIO RISCADO / DESABILITADO */
         .time-option.disabled {
-            opacity: 0.25;
+            opacity: 0.3;
             cursor: not-allowed;
             text-decoration: line-through;
             border-color: #333;
             background-color: rgba(255, 255, 255, 0.02);
-            color: #555;
+            color: #666;
         }
 
-        .time-option.disabled:hover {
-            border-color: #333;
-            color: #555;
-        }
-
-        /* BOTÃO WHATSAPP */
         .btn-submit {
             width: 100%;
             background-color: var(--gold);
@@ -231,7 +222,117 @@
             cursor: not-allowed;
         }
 
-        /* FOOTER INFO */
+        /* MODAL / PAINEL ADMIN */
+        .admin-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(212, 175, 55, 0.2);
+            color: var(--gold);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            border: 1px solid var(--gold);
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--gold);
+            border-radius: 12px;
+            padding: 25px;
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .modal-content h2 {
+            font-size: 1.2rem;
+            color: var(--gold);
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .admin-input {
+            width: 100%;
+            padding: 12px;
+            background: #111;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        .admin-btn {
+            padding: 12px;
+            border-radius: 6px;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .btn-gold {
+            background: var(--gold);
+            color: #000;
+        }
+
+        .btn-close {
+            background: #333;
+            color: #fff;
+        }
+
+        .admin-time-slot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: #151515;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+        }
+
+        .admin-time-slot.blocked {
+            border-color: var(--red);
+            background: rgba(231, 76, 60, 0.1);
+        }
+
+        .toggle-btn {
+            padding: 5px 12px;
+            font-size: 0.75rem;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .btn-block {
+            background: var(--red);
+            color: #fff;
+        }
+
+        .btn-unblock {
+            background: #27ae60;
+            color: #fff;
+        }
+
         .footer-info {
             text-align: center;
             font-size: 0.8rem;
@@ -247,11 +348,14 @@
 
     <div class="booking-container">
         
+        <div class="admin-badge" id="openAdminBtn">🔑 Barbeiro Admin</div>
+
         <header class="header">
-            <img src="https://media.base44.com/images/public/6a9b8c5c1ea53ca6ba6443ab/9e4d1bcd0_logo.png" alt="Dom Veiot Barbearia Logo">
+            <img src="https://media.base44.com/images/public/6a9b8c5c1ea53ca6ba6443ab/9e4d1bcd0_logo.png" alt="Dom Veiot Logo">
             <h1>Dom Veiot<span> BARBEARIA</span></h1>
         </header>
 
+        <!-- 1. SERVIÇO -->
         <section>
             <p class="step-title">1. Escolha o serviço</p>
             <div class="services-list" id="servicesList">
@@ -269,50 +373,72 @@
                     </div>
                     <span class="service-price">R$ 30</span>
                 </div>
-                <div class="service-option" data-service="Combo" data-price="60" data-duration="60min">
+                <div class="service-option" data-service="Combo Corte + Barba" data-price="60" data-duration="60min">
                     <div class="service-info">
-                        <span class="service-name">Combo</span>
+                        <span class="service-name">Combo Corte + Barba</span>
                         <span class="service-duration">🕒 60 min</span>
                     </div>
                     <span class="service-price">R$ 60</span>
                 </div>
-                <div class="service-option" data-service="Sobrancelha" data-price="15" data-duration="15min">
+                <div class="service-option" data-service="Corte + Sobrancelha" data-price="50" data-duration="45min">
                     <div class="service-info">
-                        <span class="service-name">Sobrancelha</span>
-                        <span class="service-duration">🕒 15 min</span>
+                        <span class="service-name">Corte + Sobrancelha</span>
+                        <span class="service-duration">🕒 45 min</span>
                     </div>
-                    <span class="service-price">R$ 15</span>
+                    <span class="service-price">R$ 50</span>
                 </div>
             </div>
         </section>
 
+        <!-- 2. DATA -->
         <section>
             <p class="step-title">2. Escolha a data</p>
-            <div class="date-input-wrapper">
-                <input type="date" id="dateInput">
-            </div>
+            <input type="date" id="dateInput">
         </section>
 
+        <!-- 3. HORÁRIO -->
         <section id="timeSection" style="display: none;">
             <p class="step-title">3. Escolha o horário</p>
-            <div class="time-grid" id="timeGrid">
-                </div>
+            <div class="time-grid" id="timeGrid"></div>
         </section>
 
         <button class="btn-submit" id="submitBtn" disabled>Agendar no WhatsApp</button>
 
         <footer class="footer-info">
-            <p>📍 Rua Mariana, 60 - Sagrado Coração, Jandira - SP</p>
+            <p>📍 Rua Mariana, 60 - Jd. N. Sra. Aparecida - Jandira</p>
             <p>🕒 Seg-Sáb 9h às 20h</p>
             <p>&copy; 2026 Dom Veiot Barbearia</p>
         </footer>
 
     </div>
 
+    <!-- MODAL DE LOGIN ADMIN -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-content">
+            <h2>Área do Barbeiro</h2>
+            <p style="font-size:0.85rem; color:#aaa; text-align:center;">Digite a senha para gerenciar a agenda</p>
+            <input type="password" class="admin-input" id="adminPassInput" placeholder="Digite a senha (padrão: 1234)">
+            <button class="admin-btn btn-gold" id="loginSubmitBtn">Entrar</button>
+            <button class="admin-btn btn-close" id="loginCloseBtn">Cancelar</button>
+        </div>
+    </div>
+
+    <!-- MODAL DE GERENCIAMENTO ADMIN -->
+    <div class="modal-overlay" id="adminDashboardModal">
+        <div class="modal-content" style="max-height: 80vh; overflow-y: auto;">
+            <h2>Painel de Horários</h2>
+            <p style="font-size:0.85rem; color:#aaa; text-align:center;">Selecione a data para riscar/bloquear horários:</p>
+            <input type="date" class="admin-input" id="adminDateInput">
+            <div id="adminSlotsContainer" style="display:flex; flex-direction:column; gap:8px; margin-top:10px;"></div>
+            <button class="admin-btn btn-close" id="adminDashboardCloseBtn" style="margin-top:15px;">Fechar Painel</button>
+        </div>
+    </div>
+
     <script>
         const WHATSAPP_NUMBER = "5511989842105";
-        const openingTime = 9; // 09:00
-        const closingTime = 20; // 20:00
+        const ADMIN_PASS = "1234"; // Defina sua senha aqui
+        const openingTime = 9;
+        const closingTime = 20;
         const timeSlotMinutes = 30;
 
         const servicesList = document.getElementById('servicesList');
@@ -321,33 +447,51 @@
         const timeGrid = document.getElementById('timeGrid');
         const submitBtn = document.getElementById('submitBtn');
 
+        // Admin Elements
+        const openAdminBtn = document.getElementById('openAdminBtn');
+        const loginModal = document.getElementById('loginModal');
+        const adminPassInput = document.getElementById('adminPassInput');
+        const loginSubmitBtn = document.getElementById('loginSubmitBtn');
+        const loginCloseBtn = document.getElementById('loginCloseBtn');
+        const adminDashboardModal = document.getElementById('adminDashboardModal');
+        const adminDateInput = document.getElementById('adminDateInput');
+        const adminSlotsContainer = document.getElementById('adminSlotsContainer');
+        const adminDashboardCloseBtn = document.getElementById('adminDashboardCloseBtn');
+
         let selectedService = null;
         let selectedDate = null;
         let selectedTime = null;
 
-        // Função para carregar agendamentos do banco local
-        function getBookedSlots() {
-            const data = localStorage.getItem('dom_veiot_bookings');
+        // Verifica se a URL tem /admin ou ?admin
+        if (window.location.pathname.includes('/admin') || window.location.search.includes('admin')) {
+            loginModal.style.display = 'flex';
+        }
+
+        // Banco de Dados Local Sincronizado
+        function getBlockedSlots() {
+            const data = localStorage.getItem('dom_veiot_blocked');
             return data ? JSON.parse(data) : {};
         }
 
-        // Função para salvar agendamento
-        function saveBooking(date, time) {
-            const bookings = getBookedSlots();
-            if (!bookings[date]) {
-                bookings[date] = [];
+        function setBlockedSlot(date, time, isBlocked) {
+            const blocked = getBlockedSlots();
+            if (!blocked[date]) blocked[date] = [];
+            
+            if (isBlocked && !blocked[date].includes(time)) {
+                blocked[date].push(time);
+            } else if (!isBlocked) {
+                blocked[date] = blocked[date].filter(t => t !== time);
             }
-            if (!bookings[date].includes(time)) {
-                bookings[date].push(time);
-            }
-            localStorage.setItem('dom_veiot_bookings', JSON.stringify(bookings));
+            
+            localStorage.setItem('dom_veiot_blocked', JSON.stringify(blocked));
+            if (selectedDate === date) generateTimeSlots(selectedDate);
         }
 
-        // Configura data mínima como hoje
         const today = new Date().toISOString().split('T')[0];
         dateInput.min = today;
+        adminDateInput.min = today;
 
-        // 1. Seleção de Serviço
+        // Seleção de Serviço
         servicesList.addEventListener('click', (e) => {
             const option = e.target.closest('.service-option');
             if (!option) return;
@@ -359,11 +503,10 @@
                 price: option.dataset.price,
                 duration: option.dataset.duration
             };
-            
             checkFormCompletion();
         });
 
-        // 2. Seleção de Data
+        // Seleção de Data
         dateInput.addEventListener('change', (e) => {
             selectedDate = e.target.value;
             selectedTime = null;
@@ -372,7 +515,7 @@
             checkFormCompletion();
         });
 
-        // 3. Seleção de Horário
+        // Seleção de Horário
         timeGrid.addEventListener('click', (e) => {
             const option = e.target.closest('.time-option');
             if (!option || option.classList.contains('disabled')) return;
@@ -380,16 +523,15 @@
             document.querySelectorAll('.time-option').forEach(el => el.classList.remove('selected'));
             option.classList.add('selected');
             selectedTime = option.dataset.time;
-            
             checkFormCompletion();
         });
 
-        // 4. Envio para WhatsApp e Bloqueio do Horário
+        // Envio WhatsApp
         submitBtn.addEventListener('click', () => {
             if (!selectedService || !selectedDate || !selectedTime) return;
 
-            // Salva o horário como bloqueado
-            saveBooking(selectedDate, selectedTime);
+            // Bloqueia o horário automaticamente ao agendar
+            setBlockedSlot(selectedDate, selectedTime, true);
 
             const dateObj = new Date(selectedDate + 'T00:00:00');
             const formattedDate = dateObj.toLocaleDateString('pt-BR');
@@ -399,48 +541,32 @@
                             `📅 *Data:* ${formattedDate}\n` +
                             `🕒 *Horário:* ${selectedTime}`;
 
-            const encodedMessage = encodeURIComponent(message);
-            const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
-
-            // Atualiza a tela imediatamente para riscar o horário
-            generateTimeSlots(selectedDate);
-            selectedTime = null;
-            checkFormCompletion();
-
-            window.open(whatsappUrl, '_blank');
+            window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, '_blank');
         });
 
         function generateTimeSlots(dateString) {
             timeGrid.innerHTML = '';
-            
             const now = new Date();
             const selectedDateObj = new Date(dateString + 'T00:00:00');
             const isToday = selectedDateObj.toDateString() === now.toDateString();
             
-            // Busca horários já agendados
-            const bookings = getBookedSlots();
-            const bookedTimesForDate = bookings[dateString] || [];
+            const blocked = getBlockedSlots();
+            const blockedTimes = blocked[dateString] || [];
 
             for (let hour = openingTime; hour < closingTime; hour++) {
                 for (let minutes = 0; minutes < 60; minutes += timeSlotMinutes) {
-                    
                     const timeLabel = `${String(hour).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
-                    
                     const slotDom = document.createElement('div');
                     slotDom.classList.add('time-option');
                     slotDom.dataset.time = timeLabel;
                     slotDom.textContent = timeLabel;
 
-                    // Desabilita se já passou do horário hoje
                     if (isToday) {
                         const slotTimeObj = new Date(dateString + 'T' + timeLabel + ':00');
-                        if (slotTimeObj < now) {
-                            slotDom.classList.add('disabled');
-                        }
+                        if (slotTimeObj < now) slotDom.classList.add('disabled');
                     }
 
-                    // Desabilita e risca se já estiver agendado
-                    if (bookedTimesForDate.includes(timeLabel)) {
+                    if (blockedTimes.includes(timeLabel)) {
                         slotDom.classList.add('disabled');
                     }
 
@@ -450,13 +576,63 @@
         }
 
         function checkFormCompletion() {
-            if (selectedService && selectedDate && selectedTime) {
-                submitBtn.disabled = false;
+            submitBtn.disabled = !(selectedService && selectedDate && selectedTime);
+        }
+
+        // LÓGICA DO ADMIN
+        openAdminBtn.addEventListener('click', () => loginModal.style.display = 'flex');
+        loginCloseBtn.addEventListener('click', () => loginModal.style.display = 'none');
+        
+        loginSubmitBtn.addEventListener('click', () => {
+            if (adminPassInput.value === ADMIN_PASS) {
+                loginModal.style.display = 'none';
+                adminDashboardModal.style.display = 'flex';
+                adminPassInput.value = '';
+                adminDateInput.value = today;
+                renderAdminSlots(today);
             } else {
-                submitBtn.disabled = true;
+                alert('Senha incorreta!');
+            }
+        });
+
+        adminDateInput.addEventListener('change', (e) => {
+            renderAdminSlots(e.target.value);
+        });
+
+        function renderAdminSlots(dateStr) {
+            adminSlotsContainer.innerHTML = '';
+            const blocked = getBlockedSlots();
+            const blockedTimes = blocked[dateStr] || [];
+
+            for (let hour = openingTime; hour < closingTime; hour++) {
+                for (let minutes = 0; minutes < 60; minutes += timeSlotMinutes) {
+                    const timeLabel = `${String(hour).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+                    const isBlocked = blockedTimes.includes(timeLabel);
+
+                    const slotRow = document.createElement('div');
+                    slotRow.className = `admin-time-slot ${isBlocked ? 'blocked' : ''}`;
+                    slotRow.innerHTML = `
+                        <span><strong>${timeLabel}</strong> - ${isBlocked ? '❌ Indisponível/Riscado' : '✅ Livre'}</span>
+                        <button class="toggle-btn ${isBlocked ? 'btn-unblock' : 'btn-block'}">
+                            ${isBlocked ? 'Desbloquear' : 'Bloquear'}
+                        </button>
+                    `;
+
+                    slotRow.querySelector('button').addEventListener('click', () => {
+                        setBlockedSlot(dateStr, timeLabel, !isBlocked);
+                        renderAdminSlots(dateStr);
+                    });
+
+                    adminSlotsContainer.appendChild(slotRow);
+                }
             }
         }
+
+        adminDashboardCloseBtn.addEventListener('click', () => {
+            adminDashboardModal.style.display = 'none';
+        });
     </script>
 </body>
 </html>
+
 
