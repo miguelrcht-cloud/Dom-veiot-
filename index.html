@@ -4,10 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dom Veiot Barbearia - Agendamento</title>
-    <!-- Ícone oficial do Base44 -->
     <link rel="icon" href="https://media.base44.com/images/public/6a9b8c5c1ea53ca6ba6443ab/9e4d1bcd0_logo.png" type="image/png">
     
-    <!-- Fonte Montserrat (usada no Base44) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -149,13 +147,13 @@
             border-radius: 8px;
             color: var(--text-white);
             font-size: 1rem;
-            appearance: none; /* Remove estilo nativo */
+            appearance: none;
             -webkit-appearance: none;
             cursor: pointer;
         }
         
         input[type="date"]::-webkit-calendar-picker-indicator {
-            filter: invert(1); /* Deixa o ícone do calendário branco */
+            filter: invert(1);
             opacity: 0.7;
             cursor: pointer;
         }
@@ -191,10 +189,19 @@
             color: var(--bg-black);
         }
 
+        /* ESTILO DO HORÁRIO JÁ OCUPADO/RISCADO */
         .time-option.disabled {
-            opacity: 0.2;
+            opacity: 0.25;
             cursor: not-allowed;
             text-decoration: line-through;
+            border-color: #333;
+            background-color: rgba(255, 255, 255, 0.02);
+            color: #555;
+        }
+
+        .time-option.disabled:hover {
+            border-color: #333;
+            color: #555;
         }
 
         /* BOTÃO WHATSAPP */
@@ -242,10 +249,9 @@
         
         <header class="header">
             <img src="https://media.base44.com/images/public/6a9b8c5c1ea53ca6ba6443ab/9e4d1bcd0_logo.png" alt="Dom Veiot Barbearia Logo">
-            <h1>Dom Veiot<span> BARBERARIA</span></h1>
+            <h1>Dom Veiot<span> BARBEARIA</span></h1>
         </header>
 
-        <!-- 1. ESCOLHA O SERVIÇO -->
         <section>
             <p class="step-title">1. Escolha o serviço</p>
             <div class="services-list" id="servicesList">
@@ -280,7 +286,6 @@
             </div>
         </section>
 
-        <!-- 2. ESCOLHA A DATA -->
         <section>
             <p class="step-title">2. Escolha a data</p>
             <div class="date-input-wrapper">
@@ -288,61 +293,66 @@
             </div>
         </section>
 
-        <!-- 3. ESCOLHA O HORÁRIO -->
         <section id="timeSection" style="display: none;">
             <p class="step-title">3. Escolha o horário</p>
             <div class="time-grid" id="timeGrid">
-                <!-- Horários gerados pelo JavaScript -->
-            </div>
+                </div>
         </section>
 
-        <!-- BOTÃO FINAL -->
         <button class="btn-submit" id="submitBtn" disabled>Agendar no WhatsApp</button>
 
-        <!-- INFORMAÇÕES ADICIONAIS -->
         <footer class="footer-info">
             <p>📍 Rua Mariana, 60 - Sagrado Coração, Jandira - SP</p>
             <p>🕒 Seg-Sáb 9h às 20h</p>
-            <p>&copy; 2026 Dom Veiot Barberaria</p>
+            <p>&copy; 2026 Dom Veiot Barbearia</p>
         </footer>
 
     </div>
 
     <script>
-        // Configurações
-        const WHATSAPP_NUMBER = "5511989842105"; // Seu número com DDD
+        const WHATSAPP_NUMBER = "5511989842105";
         const openingTime = 9; // 09:00
         const closingTime = 20; // 20:00
-        const timeSlotMinutes = 30; // Intervalo de 30 min
+        const timeSlotMinutes = 30;
 
-        // Elementos
         const servicesList = document.getElementById('servicesList');
         const dateInput = document.getElementById('dateInput');
         const timeSection = document.getElementById('timeSection');
         const timeGrid = document.getElementById('timeGrid');
         const submitBtn = document.getElementById('submitBtn');
 
-        // Estado do Agendamento
         let selectedService = null;
         let selectedDate = null;
         let selectedTime = null;
 
-        // --- INICIALIZAÇÃO ---
-        // Configura a data mínima como hoje
+        // Função para carregar agendamentos do banco local
+        function getBookedSlots() {
+            const data = localStorage.getItem('dom_veiot_bookings');
+            return data ? JSON.parse(data) : {};
+        }
+
+        // Função para salvar agendamento
+        function saveBooking(date, time) {
+            const bookings = getBookedSlots();
+            if (!bookings[date]) {
+                bookings[date] = [];
+            }
+            if (!bookings[date].includes(time)) {
+                bookings[date].push(time);
+            }
+            localStorage.setItem('dom_veiot_bookings', JSON.stringify(bookings));
+        }
+
+        // Configura data mínima como hoje
         const today = new Date().toISOString().split('T')[0];
         dateInput.min = today;
-
-        // --- EVENTOS ---
 
         // 1. Seleção de Serviço
         servicesList.addEventListener('click', (e) => {
             const option = e.target.closest('.service-option');
             if (!option) return;
 
-            // Remove seleção anterior
             document.querySelectorAll('.service-option').forEach(el => el.classList.remove('selected'));
-            
-            // Adiciona nova seleção
             option.classList.add('selected');
             selectedService = {
                 name: option.dataset.service,
@@ -356,58 +366,60 @@
         // 2. Seleção de Data
         dateInput.addEventListener('change', (e) => {
             selectedDate = e.target.value;
-            selectedTime = null; // Reseta horário ao mudar data
+            selectedTime = null;
             generateTimeSlots(selectedDate);
             timeSection.style.display = 'block';
             checkFormCompletion();
         });
 
-        // 3. Seleção de Horário (na Grid)
+        // 3. Seleção de Horário
         timeGrid.addEventListener('click', (e) => {
             const option = e.target.closest('.time-option');
             if (!option || option.classList.contains('disabled')) return;
 
-            // Remove seleção anterior
             document.querySelectorAll('.time-option').forEach(el => el.classList.remove('selected'));
-            
-            // Adiciona nova seleção
             option.classList.add('selected');
             selectedTime = option.dataset.time;
             
             checkFormCompletion();
         });
 
-        // 4. Envio para WhatsApp
+        // 4. Envio para WhatsApp e Bloqueio do Horário
         submitBtn.addEventListener('click', () => {
             if (!selectedService || !selectedDate || !selectedTime) return;
 
-            // Formata a data (DD/MM/AAAA)
+            // Salva o horário como bloqueado
+            saveBooking(selectedDate, selectedTime);
+
             const dateObj = new Date(selectedDate + 'T00:00:00');
             const formattedDate = dateObj.toLocaleDateString('pt-BR');
 
-            // Monta a mensagem
             const message = `Olá Dom Veiot! Gostaria de agendar um horário:\n\n` +
                             `✂️ *Serviço:* ${selectedService.name} (${selectedService.duration} - R$ ${selectedService.price})\n` +
                             `📅 *Data:* ${formattedDate}\n` +
                             `🕒 *Horário:* ${selectedTime}`;
 
-            // Codifica a mensagem para a URL
             const encodedMessage = encodeURIComponent(message);
             const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
 
-            // Abre o WhatsApp
+            // Atualiza a tela imediatamente para riscar o horário
+            generateTimeSlots(selectedDate);
+            selectedTime = null;
+            checkFormCompletion();
+
             window.open(whatsappUrl, '_blank');
         });
 
-
-        // --- FUNÇÕES AUXILIARES ---
-
         function generateTimeSlots(dateString) {
-            timeGrid.innerHTML = ''; // Limpa grid
-
+            timeGrid.innerHTML = '';
+            
             const now = new Date();
             const selectedDateObj = new Date(dateString + 'T00:00:00');
             const isToday = selectedDateObj.toDateString() === now.toDateString();
+            
+            // Busca horários já agendados
+            const bookings = getBookedSlots();
+            const bookedTimesForDate = bookings[dateString] || [];
 
             for (let hour = openingTime; hour < closingTime; hour++) {
                 for (let minutes = 0; minutes < 60; minutes += timeSlotMinutes) {
@@ -419,12 +431,17 @@
                     slotDom.dataset.time = timeLabel;
                     slotDom.textContent = timeLabel;
 
-                    // Desabilita horários passados se for hoje
+                    // Desabilita se já passou do horário hoje
                     if (isToday) {
                         const slotTimeObj = new Date(dateString + 'T' + timeLabel + ':00');
                         if (slotTimeObj < now) {
                             slotDom.classList.add('disabled');
                         }
+                    }
+
+                    // Desabilita e risca se já estiver agendado
+                    if (bookedTimesForDate.includes(timeLabel)) {
+                        slotDom.classList.add('disabled');
                     }
 
                     timeGrid.appendChild(slotDom);
